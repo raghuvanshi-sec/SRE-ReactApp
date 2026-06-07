@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   View,
   Text,
@@ -6,15 +6,17 @@ import {
   ScrollView,
   Pressable,
   Platform,
-} from 'react-native';
-import { useTheme } from '../hooks/use-theme';
-import { Spacing } from '../constants/theme';
-import { useSRE } from '../context/SREContext';
+} from "react-native";
+import { useTheme } from "../hooks/use-theme";
+import { Spacing } from "../constants/theme";
+import { useSRE } from "../context/SREContext";
 
 export default function AgentScreen() {
   const theme = useTheme();
   const { agents, toggleAgentStatus, cycleTrustLevel, lastUpdated } = useSRE();
-  const [selectedAgentId, setSelectedAgentId] = React.useState(agents[0]?.id || '');
+  const [selectedAgentId, setSelectedAgentId] = React.useState(
+    agents[0]?.id || "",
+  );
 
   const selectedAgent = agents.find((a) => a.id === selectedAgentId);
 
@@ -23,13 +25,15 @@ export default function AgentScreen() {
       <ScrollView contentContainerStyle={styles.contentContainer}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={[styles.title, { color: theme.text }]}>AI Agent Control Room</Text>
+          <Text style={[styles.title, { color: theme.text }]}>
+            AI Agent Control Room
+          </Text>
           <Text style={[styles.subtitle, { color: theme.textSecondary }]}>
             Monitor and configure autonomous sentient retention behaviors
           </Text>
           <View style={styles.liveIndicatorRow}>
             <View style={styles.liveDot} />
-            <Text style={[styles.liveText, { color: '#10B981' }]}>
+            <Text style={[styles.liveText, { color: "#10B981" }]}>
               LIVE — {lastUpdated.toLocaleTimeString()}
             </Text>
           </View>
@@ -38,7 +42,7 @@ export default function AgentScreen() {
         {/* Agent Grid */}
         <View style={styles.agentList}>
           {agents.map((agent) => {
-            const isActive = agent.status === 'active';
+            const isActive = agent.status === "active";
             const isSelected = agent.id === selectedAgentId;
 
             return (
@@ -49,15 +53,21 @@ export default function AgentScreen() {
                   styles.agentCard,
                   {
                     backgroundColor: theme.backgroundElement,
-                    borderColor: isSelected ? theme.text : theme.backgroundSelected,
+                    borderColor: isSelected
+                      ? theme.text
+                      : theme.backgroundSelected,
                     opacity: pressed ? 0.9 : 1,
                   },
                 ]}
               >
                 <View style={styles.agentCardHeader}>
                   <View>
-                    <Text style={[styles.agentName, { color: theme.text }]}>{agent.name}</Text>
-                    <Text style={[styles.agentType, { color: theme.textSecondary }]}>
+                    <Text style={[styles.agentName, { color: theme.text }]}>
+                      {agent.name}
+                    </Text>
+                    <Text
+                      style={[styles.agentType, { color: theme.textSecondary }]}
+                    >
                       {agent.type}
                     </Text>
                   </View>
@@ -66,13 +76,20 @@ export default function AgentScreen() {
                     style={[
                       styles.statusIndicator,
                       {
-                        backgroundColor: isActive ? '#059669' + '20' : '#DC2626' + '20',
-                        borderColor: isActive ? '#10B981' : '#EF4444',
+                        backgroundColor: isActive
+                          ? "#059669" + "20"
+                          : "#DC2626" + "20",
+                        borderColor: isActive ? "#10B981" : "#EF4444",
                       },
                     ]}
                   >
-                    <Text style={[styles.statusText, { color: isActive ? '#10B981' : '#EF4444' }]}>
-                      {isActive ? '🟢 Active' : '🔴 Paused'}
+                    <Text
+                      style={[
+                        styles.statusText,
+                        { color: isActive ? "#10B981" : "#EF4444" },
+                      ]}
+                    >
+                      {isActive ? "🟢 Active" : "🔴 Paused"}
                     </Text>
                   </Pressable>
                 </View>
@@ -80,22 +97,56 @@ export default function AgentScreen() {
                 {/* Accuracy and trust */}
                 <View style={styles.agentMetricsGrid}>
                   <View>
-                    <Text style={[styles.metricLabel, { color: theme.textSecondary }]}>Accuracy</Text>
-                    <Text style={[styles.metricVal, { color: theme.text }]}>{agent.accuracy}%</Text>
+                    <Text
+                      style={[
+                        styles.metricLabel,
+                        { color: theme.textSecondary },
+                      ]}
+                    >
+                      Accuracy
+                    </Text>
+                    <Text style={[styles.metricVal, { color: theme.text }]}>
+                      {agent.accuracy}%
+                    </Text>
                   </View>
                   <View>
-                    <Text style={[styles.metricLabel, { color: theme.textSecondary }]}>Decisions Today</Text>
-                    <Text style={[styles.metricVal, { color: theme.text }]}>{agent.decisionsToday}</Text>
+                    <Text
+                      style={[
+                        styles.metricLabel,
+                        { color: theme.textSecondary },
+                      ]}
+                    >
+                      Decisions Today
+                    </Text>
+                    <Text style={[styles.metricVal, { color: theme.text }]}>
+                      {agent.decisionsToday}
+                    </Text>
                   </View>
                   <View>
-                    <Text style={[styles.metricLabel, { color: theme.textSecondary }]}>Saved Value</Text>
-                    <Text style={[styles.metricVal, { color: '#10B981' }]}>{agent.savedToday}</Text>
+                    <Text
+                      style={[
+                        styles.metricLabel,
+                        { color: theme.textSecondary },
+                      ]}
+                    >
+                      Saved Value
+                    </Text>
+                    <Text style={[styles.metricVal, { color: "#10B981" }]}>
+                      {agent.savedToday}
+                    </Text>
                   </View>
                 </View>
 
                 {/* Trust Threshold Interactive Control */}
-                <View style={[styles.trustRow, { borderTopColor: theme.backgroundSelected }]}>
-                  <Text style={[styles.trustLabel, { color: theme.textSecondary }]}>
+                <View
+                  style={[
+                    styles.trustRow,
+                    { borderTopColor: theme.backgroundSelected },
+                  ]}
+                >
+                  <Text
+                    style={[styles.trustLabel, { color: theme.textSecondary }]}
+                  >
                     Trust Threshold:
                   </Text>
                   <Pressable
@@ -104,17 +155,17 @@ export default function AgentScreen() {
                       styles.trustBadge,
                       {
                         backgroundColor:
-                          agent.trustLevel === 'High'
-                            ? '#059669' + '20'
-                            : agent.trustLevel === 'Medium'
-                            ? '#D97706' + '20'
-                            : '#EF4444' + '20',
+                          agent.trustLevel === "High"
+                            ? "#059669" + "20"
+                            : agent.trustLevel === "Medium"
+                              ? "#D97706" + "20"
+                              : "#EF4444" + "20",
                         borderColor:
-                          agent.trustLevel === 'High'
-                            ? '#10B981'
-                            : agent.trustLevel === 'Medium'
-                            ? '#F59E0B'
-                            : '#EF4444',
+                          agent.trustLevel === "High"
+                            ? "#10B981"
+                            : agent.trustLevel === "Medium"
+                              ? "#F59E0B"
+                              : "#EF4444",
                       },
                     ]}
                   >
@@ -123,11 +174,11 @@ export default function AgentScreen() {
                         styles.trustBadgeText,
                         {
                           color:
-                            agent.trustLevel === 'High'
-                              ? '#10B981'
-                              : agent.trustLevel === 'Medium'
-                              ? '#F59E0B'
-                              : '#EF4444',
+                            agent.trustLevel === "High"
+                              ? "#10B981"
+                              : agent.trustLevel === "Medium"
+                                ? "#F59E0B"
+                                : "#EF4444",
                         },
                       ]}
                     >
@@ -155,11 +206,21 @@ export default function AgentScreen() {
               📋 Live Logs: {selectedAgent.name}
             </Text>
 
-            <View style={[styles.capabilitiesBox, { backgroundColor: theme.backgroundSelected }]}>
-              <Text style={[styles.capLabel, { color: theme.textSecondary }]}>Agent Capabilities:</Text>
+            <View
+              style={[
+                styles.capabilitiesBox,
+                { backgroundColor: theme.backgroundSelected },
+              ]}
+            >
+              <Text style={[styles.capLabel, { color: theme.textSecondary }]}>
+                Agent Capabilities:
+              </Text>
               <View style={styles.capList}>
                 {selectedAgent.capabilities.map((cap, idx) => (
-                  <Text key={idx} style={[styles.capItem, { color: theme.text }]}>
+                  <Text
+                    key={idx}
+                    style={[styles.capItem, { color: theme.text }]}
+                  >
                     ⚡ {cap}
                   </Text>
                 ))}
@@ -168,7 +229,7 @@ export default function AgentScreen() {
 
             <ScrollView style={styles.logStream} nestedScrollEnabled>
               {selectedAgent.systemLogs.map((log, idx) => (
-                <Text key={idx} style={[styles.logLine, { color: '#10B981' }]}>
+                <Text key={idx} style={[styles.logLine, { color: "#10B981" }]}>
                   {log}
                 </Text>
               ))}
@@ -194,17 +255,17 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: '800',
+    fontWeight: "800",
     letterSpacing: -0.5,
   },
   subtitle: {
     fontSize: 14,
     marginTop: 4,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   liveIndicatorRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginTop: 8,
     gap: 6,
   },
@@ -212,11 +273,11 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#10B981',
+    backgroundColor: "#10B981",
   },
   liveText: {
     fontSize: 11,
-    fontWeight: '700',
+    fontWeight: "700",
     letterSpacing: 0.5,
   },
   agentList: {
@@ -229,14 +290,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   agentCardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: Spacing.two,
   },
   agentName: {
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   agentType: {
     fontSize: 12,
@@ -250,11 +311,11 @@ const styles = StyleSheet.create({
   },
   statusText: {
     fontSize: 11,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   agentMetricsGrid: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     paddingVertical: Spacing.two,
   },
   metricLabel: {
@@ -263,19 +324,19 @@ const styles = StyleSheet.create({
   },
   metricVal: {
     fontSize: 15,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   trustRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingTop: Spacing.two,
     borderTopWidth: 1,
     marginTop: Spacing.one,
   },
   trustLabel: {
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   trustBadge: {
     paddingHorizontal: 8,
@@ -285,7 +346,7 @@ const styles = StyleSheet.create({
   },
   trustBadgeText: {
     fontSize: 11,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   logPanel: {
     borderRadius: 16,
@@ -294,7 +355,7 @@ const styles = StyleSheet.create({
   },
   logPanelTitle: {
     fontSize: 15,
-    fontWeight: '700',
+    fontWeight: "700",
     marginBottom: Spacing.two,
   },
   capabilitiesBox: {
@@ -304,25 +365,29 @@ const styles = StyleSheet.create({
   },
   capLabel: {
     fontSize: 11,
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: 4,
-    textTransform: 'uppercase',
+    textTransform: "uppercase",
   },
   capList: {
     gap: 4,
   },
   capItem: {
     fontSize: 12,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   logStream: {
     maxHeight: 220,
-    backgroundColor: '#0a0a0c',
+    backgroundColor: "#0a0a0c",
     padding: Spacing.two,
     borderRadius: 8,
   },
   logLine: {
-    fontFamily: Platform.select({ ios: 'CourierNewPSMT', android: 'monospace', web: 'Courier, monospace' }),
+    fontFamily: Platform.select({
+      ios: "CourierNewPSMT",
+      android: "monospace",
+      web: "Courier, monospace",
+    }),
     fontSize: 11,
     lineHeight: 16,
     marginBottom: 4,

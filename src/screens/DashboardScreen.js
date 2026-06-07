@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   View,
   Text,
@@ -7,18 +7,18 @@ import {
   Pressable,
   Dimensions,
   Platform,
-} from 'react-native';
-import { useNavigation } from 'expo-router';
-import { LineChart } from 'react-native-chart-kit';
-import { useTheme } from '../hooks/use-theme';
-import { Spacing } from '../constants/theme';
-import KPICard from '../components/KPIcard';
-import { useSRE } from '../context/SREContext';
+} from "react-native";
+import { useNavigation } from "expo-router";
+import { LineChart } from "react-native-chart-kit";
+import { useTheme } from "../hooks/use-theme";
+import { Spacing } from "../constants/theme";
+import KPICard from "../components/KPIcard";
+import { useSRE } from "../context/SREContext";
 
 export default function DashboardScreen() {
   const theme = useTheme();
   const navigation = useNavigation();
-  const screenWidth = Dimensions.get('window').width;
+  const screenWidth = Dimensions.get("window").width;
   const { kpis, approvals, chartData, lastUpdated } = useSRE();
 
   // Chart styling options
@@ -26,11 +26,11 @@ export default function DashboardScreen() {
     backgroundGradientFrom: theme.backgroundElement,
     backgroundGradientTo: theme.backgroundElement,
     color: (opacity = 1) =>
-      theme.background === '#000000'
+      theme.background === "#000000"
         ? `rgba(52, 211, 153, ${opacity})` // emerald-400 for dark mode
         : `rgba(16, 185, 129, ${opacity})`, // emerald-500 for light mode
     labelColor: (opacity = 1) =>
-      theme.background === '#000000'
+      theme.background === "#000000"
         ? `rgba(176, 180, 186, ${opacity})`
         : `rgba(96, 100, 108, ${opacity})`,
     strokeWidth: 3,
@@ -40,7 +40,7 @@ export default function DashboardScreen() {
   };
 
   const liveChartData = {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
     datasets: [
       {
         data: chartData,
@@ -49,7 +49,7 @@ export default function DashboardScreen() {
     ],
   };
 
-  const pendingApprovals = approvals.filter((a) => a.status === 'pending');
+  const pendingApprovals = approvals.filter((a) => a.status === "pending");
 
   return (
     <ScrollView
@@ -58,20 +58,24 @@ export default function DashboardScreen() {
     >
       {/* Header */}
       <View style={styles.header}>
-        <Text style={[styles.title, { color: theme.text }]}>Sentient Retention Engine</Text>
+        <Text style={[styles.title, { color: theme.text }]}>
+          Sentient Retention Engine
+        </Text>
         <Text style={[styles.subtitle, { color: theme.textSecondary }]}>
           AI-Powered Churn Prevention & Agent Governance
         </Text>
         <View style={styles.liveIndicatorRow}>
           <View style={styles.liveDot} />
-          <Text style={[styles.liveText, { color: '#10B981' }]}>
+          <Text style={[styles.liveText, { color: "#10B981" }]}>
             LIVE — Updated {lastUpdated.toLocaleTimeString()}
           </Text>
         </View>
       </View>
 
       {/* KPI Section */}
-      <Text style={[styles.sectionTitle, { color: theme.text }]}>System Health KPIs</Text>
+      <Text style={[styles.sectionTitle, { color: theme.text }]}>
+        System Health KPIs
+      </Text>
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -108,7 +112,11 @@ export default function DashboardScreen() {
           <View style={styles.chartWrapper}>
             <LineChart
               data={liveChartData}
-              width={Platform.OS === 'web' ? Math.max(10, Math.min(screenWidth - 64, 730)) : Math.max(10, screenWidth - 48)}
+              width={
+                Platform.OS === "web"
+                  ? Math.max(10, Math.min(screenWidth - 64, 730))
+                  : Math.max(10, screenWidth - 48)
+              }
               height={220}
               chartConfig={chartConfig}
               bezier
@@ -131,7 +139,7 @@ export default function DashboardScreen() {
             <Text style={[styles.cardTitle, { color: theme.text }]}>
               Pending Governance Approvals
             </Text>
-            <Pressable onPress={() => navigation.navigate('Approvals')}>
+            <Pressable onPress={() => navigation.navigate("Approvals")}>
               <Text style={styles.viewAllLink}>View All</Text>
             </Pressable>
           </View>
@@ -158,18 +166,21 @@ export default function DashboardScreen() {
                       styles.alertPriority,
                       {
                         color:
-                          app.priority === 'Critical'
-                            ? '#EF4444'
-                            : app.priority === 'High'
-                            ? '#F59E0B'
-                            : '#3B82F6',
+                          app.priority === "Critical"
+                            ? "#EF4444"
+                            : app.priority === "High"
+                              ? "#F59E0B"
+                              : "#3B82F6",
                       },
                     ]}
                   >
                     {app.priority}
                   </Text>
                 </View>
-                <Text style={[styles.alertPlay, { color: theme.textSecondary }]} numberOfLines={1}>
+                <Text
+                  style={[styles.alertPlay, { color: theme.textSecondary }]}
+                  numberOfLines={1}
+                >
                   {app.proposedPlay}
                 </Text>
               </View>
@@ -179,7 +190,9 @@ export default function DashboardScreen() {
       </View>
 
       {/* Navigation Shortcuts */}
-      <Text style={[styles.sectionTitle, { color: theme.text }]}>Operational Centers</Text>
+      <Text style={[styles.sectionTitle, { color: theme.text }]}>
+        Operational Centers
+      </Text>
       <View style={styles.shortcutsGrid}>
         <Pressable
           style={({ pressed }) => [
@@ -190,10 +203,12 @@ export default function DashboardScreen() {
               opacity: pressed ? 0.8 : 1,
             },
           ]}
-          onPress={() => navigation.navigate('Customers')}
+          onPress={() => navigation.navigate("Customers")}
         >
           <Text style={styles.shortcutIcon}>👥</Text>
-          <Text style={[styles.shortcutTitle, { color: theme.text }]}>Customers</Text>
+          <Text style={[styles.shortcutTitle, { color: theme.text }]}>
+            Customers
+          </Text>
           <Text style={[styles.shortcutDesc, { color: theme.textSecondary }]}>
             View risk profiles & simulate digital twins
           </Text>
@@ -208,10 +223,12 @@ export default function DashboardScreen() {
               opacity: pressed ? 0.8 : 1,
             },
           ]}
-          onPress={() => navigation.navigate('Agents')}
+          onPress={() => navigation.navigate("Agents")}
         >
           <Text style={styles.shortcutIcon}>🤖</Text>
-          <Text style={[styles.shortcutTitle, { color: theme.text }]}>AI Agents</Text>
+          <Text style={[styles.shortcutTitle, { color: theme.text }]}>
+            AI Agents
+          </Text>
           <Text style={[styles.shortcutDesc, { color: theme.textSecondary }]}>
             Configure trust thresholds & view logs
           </Text>
@@ -226,10 +243,12 @@ export default function DashboardScreen() {
               opacity: pressed ? 0.8 : 1,
             },
           ]}
-          onPress={() => navigation.navigate('Approvals')}
+          onPress={() => navigation.navigate("Approvals")}
         >
           <Text style={styles.shortcutIcon}>🛡️</Text>
-          <Text style={[styles.shortcutTitle, { color: theme.text }]}>Approvals</Text>
+          <Text style={[styles.shortcutTitle, { color: theme.text }]}>
+            Approvals
+          </Text>
           <Text style={[styles.shortcutDesc, { color: theme.textSecondary }]}>
             Approve AI-driven discount retention plays
           </Text>
@@ -253,17 +272,17 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: '800',
+    fontWeight: "800",
     letterSpacing: -0.5,
   },
   subtitle: {
     fontSize: 14,
     marginTop: 4,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   liveIndicatorRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginTop: 8,
     gap: 6,
   },
@@ -271,19 +290,19 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#10B981',
+    backgroundColor: "#10B981",
   },
   liveText: {
     fontSize: 11,
-    fontWeight: '700',
+    fontWeight: "700",
     letterSpacing: 0.5,
   },
   sectionTitle: {
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: "700",
     marginTop: Spacing.three,
     marginBottom: Spacing.two,
-    textTransform: 'uppercase',
+    textTransform: "uppercase",
     letterSpacing: 0.5,
   },
   kpiScroll: {
@@ -292,7 +311,7 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.three,
   },
   kpiContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     paddingRight: Spacing.four,
   },
   gridContainer: {
@@ -305,26 +324,26 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.two,
   },
   cardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: Spacing.two,
   },
   cardTitle: {
     fontSize: 15,
-    fontWeight: '700',
+    fontWeight: "700",
     marginBottom: Spacing.two,
   },
   viewAllLink: {
     fontSize: 13,
-    color: '#3B82F6',
-    fontWeight: '600',
+    color: "#3B82F6",
+    fontWeight: "600",
   },
   chartWrapper: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     borderRadius: 12,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   chart: {
     marginVertical: Spacing.one,
@@ -335,33 +354,33 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   alertHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 4,
   },
   alertCustomer: {
     fontSize: 14,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   alertPriority: {
     fontSize: 11,
-    fontWeight: '700',
-    textTransform: 'uppercase',
+    fontWeight: "700",
+    textTransform: "uppercase",
   },
   alertPlay: {
     fontSize: 13,
   },
   emptyAlert: {
     fontSize: 13,
-    textAlign: 'center',
+    textAlign: "center",
     paddingVertical: Spacing.three,
   },
   shortcutsGrid: {
-    flexDirection: 'column',
+    flexDirection: "column",
     gap: Spacing.two,
   },
   shortcutCard: {
-    flexDirection: 'column',
+    flexDirection: "column",
     borderRadius: 16,
     padding: Spacing.three,
     borderWidth: 1,
@@ -372,7 +391,7 @@ const styles = StyleSheet.create({
   },
   shortcutTitle: {
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: "700",
     marginBottom: 2,
   },
   shortcutDesc: {

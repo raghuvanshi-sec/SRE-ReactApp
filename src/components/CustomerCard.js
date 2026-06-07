@@ -1,21 +1,23 @@
-import React from 'react';
-import { View, StyleSheet, Text, Pressable, Platform } from 'react-native';
-import { useTheme } from '../hooks/use-theme';
-import { Spacing } from '../constants/theme';
+import React from "react";
+import { View, StyleSheet, Text, Pressable, Platform } from "react-native";
+import { useTheme } from "../hooks/use-theme";
+import { Spacing } from "../constants/theme";
 
 export default function CustomerCard({ customer, onViewTwin, onViewDetails }) {
   const theme = useTheme();
 
   const getRiskColor = (risk) => {
-    if (risk >= 75) return theme.background === '#000000' ? '#FF6B6B' : '#DC2626';
-    if (risk >= 40) return theme.background === '#000000' ? '#FCD34D' : '#D97706';
-    return theme.background === '#000000' ? '#4ADE80' : '#059669';
+    if (risk >= 75)
+      return theme.background === "#000000" ? "#FF6B6B" : "#DC2626";
+    if (risk >= 40)
+      return theme.background === "#000000" ? "#FCD34D" : "#D97706";
+    return theme.background === "#000000" ? "#4ADE80" : "#059669";
   };
 
   const getRiskLabel = (risk) => {
-    if (risk >= 75) return 'CRITICAL RISK';
-    if (risk >= 40) return 'MEDIUM RISK';
-    return 'LOW RISK';
+    if (risk >= 75) return "CRITICAL RISK";
+    if (risk >= 40) return "MEDIUM RISK";
+    return "LOW RISK";
   };
 
   const riskColor = getRiskColor(customer.churnRisk);
@@ -33,10 +35,19 @@ export default function CustomerCard({ customer, onViewTwin, onViewDetails }) {
       {/* Header */}
       <View style={styles.header}>
         <View>
-          <Text style={[styles.name, { color: theme.text }]}>{customer.name}</Text>
-          <Text style={[styles.plan, { color: theme.textSecondary }]}>{customer.plan}</Text>
+          <Text style={[styles.name, { color: theme.text }]}>
+            {customer.name}
+          </Text>
+          <Text style={[styles.plan, { color: theme.textSecondary }]}>
+            {customer.plan}
+          </Text>
         </View>
-        <View style={[styles.badge, { backgroundColor: riskColor + '20', borderColor: riskColor }]}>
+        <View
+          style={[
+            styles.badge,
+            { backgroundColor: riskColor + "20", borderColor: riskColor },
+          ]}
+        >
           <Text style={[styles.badgeText, { color: riskColor }]}>
             {getRiskLabel(customer.churnRisk)} ({customer.churnRisk}%)
           </Text>
@@ -46,22 +57,48 @@ export default function CustomerCard({ customer, onViewTwin, onViewDetails }) {
       {/* Info Rows */}
       <View style={styles.metricsContainer}>
         <View style={styles.metricItem}>
-          <Text style={[styles.metricLabel, { color: theme.textSecondary }]}>Sentiment</Text>
-          <Text style={[styles.metricValue, { color: customer.sentiment < 40 ? '#EF4444' : theme.text }]}>
-            {customer.sentiment}% {customer.sentiment < 40 ? '😞' : customer.sentiment < 70 ? '😐' : '😊'}
+          <Text style={[styles.metricLabel, { color: theme.textSecondary }]}>
+            Sentiment
+          </Text>
+          <Text
+            style={[
+              styles.metricValue,
+              { color: customer.sentiment < 40 ? "#EF4444" : theme.text },
+            ]}
+          >
+            {customer.sentiment}%{" "}
+            {customer.sentiment < 40
+              ? "😞"
+              : customer.sentiment < 70
+                ? "😐"
+                : "😊"}
           </Text>
         </View>
         <View style={styles.metricItem}>
-          <Text style={[styles.metricLabel, { color: theme.textSecondary }]}>Active Since</Text>
-          <Text style={[styles.metricValue, { color: theme.text }]}>{customer.daysActive} days</Text>
+          <Text style={[styles.metricLabel, { color: theme.textSecondary }]}>
+            Active Since
+          </Text>
+          <Text style={[styles.metricValue, { color: theme.text }]}>
+            {customer.daysActive} days
+          </Text>
         </View>
       </View>
 
       {/* Recommendation Section */}
       {customer.digitalTwin && (
-        <View style={[styles.recommendationBox, { backgroundColor: theme.backgroundSelected }]}>
-          <Text style={[styles.recLabel, { color: theme.textSecondary }]}>🤖 Recommended Retention Play:</Text>
-          <Text style={[styles.recText, { color: theme.text }]} numberOfLines={2}>
+        <View
+          style={[
+            styles.recommendationBox,
+            { backgroundColor: theme.backgroundSelected },
+          ]}
+        >
+          <Text style={[styles.recLabel, { color: theme.textSecondary }]}>
+            🤖 Recommended Retention Play:
+          </Text>
+          <Text
+            style={[styles.recText, { color: theme.text }]}
+            numberOfLines={2}
+          >
             {customer.digitalTwin.recommendedPlay}
           </Text>
         </View>
@@ -72,11 +109,16 @@ export default function CustomerCard({ customer, onViewTwin, onViewDetails }) {
         <Pressable
           style={({ pressed }) => [
             styles.secondaryButton,
-            { borderColor: theme.backgroundSelected, opacity: pressed ? 0.7 : 1 },
+            {
+              borderColor: theme.backgroundSelected,
+              opacity: pressed ? 0.7 : 1,
+            },
           ]}
           onPress={() => onViewDetails(customer)}
         >
-          <Text style={[styles.secondaryButtonText, { color: theme.text }]}>View Details</Text>
+          <Text style={[styles.secondaryButtonText, { color: theme.text }]}>
+            View Details
+          </Text>
         </Pressable>
 
         <Pressable
@@ -101,7 +143,7 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.three,
     ...Platform.select({
       ios: {
-        shadowColor: '#000',
+        shadowColor: "#000",
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.05,
         shadowRadius: 6,
@@ -110,19 +152,19 @@ const styles = StyleSheet.create({
         elevation: 2,
       },
       web: {
-        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.04)',
+        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.04)",
       },
     }),
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
     marginBottom: Spacing.three,
   },
   name: {
     fontSize: 18,
-    fontWeight: '700',
+    fontWeight: "700",
     letterSpacing: -0.2,
   },
   plan: {
@@ -137,11 +179,11 @@ const styles = StyleSheet.create({
   },
   badgeText: {
     fontSize: 10,
-    fontWeight: '700',
+    fontWeight: "700",
     letterSpacing: 0.5,
   },
   metricsContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginBottom: Spacing.three,
     gap: Spacing.three,
   },
@@ -154,7 +196,7 @@ const styles = StyleSheet.create({
   },
   metricValue: {
     fontSize: 15,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   recommendationBox: {
     borderRadius: 12,
@@ -163,16 +205,16 @@ const styles = StyleSheet.create({
   },
   recLabel: {
     fontSize: 11,
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: 4,
-    textTransform: 'uppercase',
+    textTransform: "uppercase",
   },
   recText: {
     fontSize: 13,
     lineHeight: 18,
   },
   actionsContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: Spacing.two,
   },
   secondaryButton: {
@@ -180,23 +222,23 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 10,
     borderWidth: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   secondaryButtonText: {
     fontSize: 13,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   primaryButton: {
     flex: 1,
     paddingVertical: 10,
     borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   primaryButtonText: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     fontSize: 13,
-    fontWeight: '700',
+    fontWeight: "700",
   },
 });

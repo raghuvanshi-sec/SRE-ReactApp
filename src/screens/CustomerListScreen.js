@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -6,19 +6,19 @@ import {
   FlatList,
   TextInput,
   Pressable,
-} from 'react-native';
-import { useNavigation } from 'expo-router';
-import { useTheme } from '../hooks/use-theme';
-import { Spacing } from '../constants/theme';
-import CustomerCard from '../components/CustomerCard';
-import { useSRE } from '../context/SREContext';
+} from "react-native";
+import { useNavigation } from "expo-router";
+import { useTheme } from "../hooks/use-theme";
+import { Spacing } from "../constants/theme";
+import CustomerCard from "../components/CustomerCard";
+import { useSRE } from "../context/SREContext";
 
 export default function CustomerListScreen() {
   const theme = useTheme();
   const navigation = useNavigation();
   const { customers } = useSRE();
-  const [search, setSearch] = useState('');
-  const [activeFilter, setActiveFilter] = useState('ALL'); // ALL, HIGH, MEDIUM, LOW
+  const [search, setSearch] = useState("");
+  const [activeFilter, setActiveFilter] = useState("ALL"); // ALL, HIGH, MEDIUM, LOW
 
   const filteredCustomers = customers.filter((cust) => {
     // Search filter
@@ -28,13 +28,13 @@ export default function CustomerListScreen() {
       cust.plan.toLowerCase().includes(search.toLowerCase());
 
     // Risk category filter
-    if (activeFilter === 'HIGH') {
+    if (activeFilter === "HIGH") {
       return matchesSearch && cust.churnRisk >= 75;
     }
-    if (activeFilter === 'MEDIUM') {
+    if (activeFilter === "MEDIUM") {
       return matchesSearch && cust.churnRisk >= 40 && cust.churnRisk < 75;
     }
-    if (activeFilter === 'LOW') {
+    if (activeFilter === "LOW") {
       return matchesSearch && cust.churnRisk < 40;
     }
     return matchesSearch;
@@ -42,19 +42,19 @@ export default function CustomerListScreen() {
 
   const handleViewTwin = (customer) => {
     // Navigate to Digital Twin simulation
-    navigation.navigate('DigitalTwin', { customerId: customer.id });
+    navigation.navigate("DigitalTwin", { customerId: customer.id });
   };
 
   const handleViewDetails = (customer) => {
     // Navigate to Digital Twin screen directly (it acts as the comprehensive customer workspace)
-    navigation.navigate('DigitalTwin', { customerId: customer.id });
+    navigation.navigate("DigitalTwin", { customerId: customer.id });
   };
 
   const filterTabs = [
-    { label: 'All', value: 'ALL' },
-    { label: '🔥 High Risk', value: 'HIGH' },
-    { label: '⚠️ Med Risk', value: 'MEDIUM' },
-    { label: '✅ Low Risk', value: 'LOW' },
+    { label: "All", value: "ALL" },
+    { label: "🔥 High Risk", value: "HIGH" },
+    { label: "⚠️ Med Risk", value: "MEDIUM" },
+    { label: "✅ Low Risk", value: "LOW" },
   ];
 
   return (
@@ -62,7 +62,7 @@ export default function CustomerListScreen() {
       {/* Live indicator */}
       <View style={styles.liveBar}>
         <View style={styles.liveDot} />
-        <Text style={[styles.liveText, { color: '#10B981' }]}>
+        <Text style={[styles.liveText, { color: "#10B981" }]}>
           LIVE — Risks updating in real time
         </Text>
       </View>
@@ -99,7 +99,7 @@ export default function CustomerListScreen() {
                   backgroundColor: isSelected
                     ? theme.backgroundSelected
                     : theme.backgroundElement,
-                  borderColor: isSelected ? theme.text : 'transparent',
+                  borderColor: isSelected ? theme.text : "transparent",
                   opacity: pressed ? 0.8 : 1,
                 },
               ]}
@@ -109,7 +109,7 @@ export default function CustomerListScreen() {
                   styles.filterText,
                   {
                     color: isSelected ? theme.text : theme.textSecondary,
-                    fontWeight: isSelected ? '700' : '500',
+                    fontWeight: isSelected ? "700" : "500",
                   },
                 ]}
               >
@@ -149,8 +149,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   liveBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingHorizontal: Spacing.three,
     paddingTop: Spacing.two,
     gap: 6,
@@ -159,11 +159,11 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#10B981',
+    backgroundColor: "#10B981",
   },
   liveText: {
     fontSize: 11,
-    fontWeight: '700',
+    fontWeight: "700",
     letterSpacing: 0.5,
   },
   searchContainer: {
@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   filterContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     paddingHorizontal: Spacing.three,
     paddingVertical: Spacing.two,
     gap: Spacing.two,
@@ -198,10 +198,10 @@ const styles = StyleSheet.create({
   },
   emptyContainer: {
     padding: Spacing.six,
-    alignItems: 'center',
+    alignItems: "center",
   },
   emptyText: {
     fontSize: 14,
-    textAlign: 'center',
+    textAlign: "center",
   },
 });

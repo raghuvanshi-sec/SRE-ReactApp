@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -7,16 +7,16 @@ import {
   Pressable,
   Platform,
   Alert,
-} from 'react-native';
-import { useLocalSearchParams, useNavigation } from 'expo-router';
-import { useTheme } from '../hooks/use-theme';
-import { Spacing } from '../constants/theme';
-import { useSRE } from '../context/SREContext';
+} from "react-native";
+import { useLocalSearchParams, useNavigation } from "expo-router";
+import { useTheme } from "../hooks/use-theme";
+import { Spacing } from "../constants/theme";
+import { useSRE } from "../context/SREContext";
 
 export default function DigitalTwinScreen() {
   const theme = useTheme();
   const navigation = useNavigation();
-  const { customerId = 'cust-1' } = useLocalSearchParams();
+  const { customerId = "cust-1" } = useLocalSearchParams();
   const { customers } = useSRE();
   const customer = customers.find((c) => c.id === customerId) || customers[0];
 
@@ -34,37 +34,39 @@ export default function DigitalTwinScreen() {
 
   const handleTriggerPlay = () => {
     const activePlays = [];
-    if (applyDiscount) activePlays.push('15% Subscription Discount');
-    if (applyOnboarding) activePlays.push('Customer Success Coaching Sync');
-    if (applyFeatureBeta) activePlays.push('Priority Engineering Beta Access');
+    if (applyDiscount) activePlays.push("15% Subscription Discount");
+    if (applyOnboarding) activePlays.push("Customer Success Coaching Sync");
+    if (applyFeatureBeta) activePlays.push("Priority Engineering Beta Access");
 
     if (activePlays.length === 0) {
-      if (Platform.OS === 'web') {
-        alert('Please select at least one retention play to trigger.');
+      if (Platform.OS === "web") {
+        alert("Please select at least one retention play to trigger.");
       } else {
-        Alert.alert('No Plays Selected', 'Select at least one retention play.');
+        Alert.alert("No Plays Selected", "Select at least one retention play.");
       }
       return;
     }
 
     const message = `Retention playbook triggered for ${
       customer.name
-    }:\n- ${activePlays.join('\n- ')}\n\nSimulated churn risk successfully dropped to ${simulatedRisk}%.`;
+    }:\n- ${activePlays.join("\n- ")}\n\nSimulated churn risk successfully dropped to ${simulatedRisk}%.`;
 
-    if (Platform.OS === 'web') {
+    if (Platform.OS === "web") {
       alert(message);
-      navigation.navigate('index');
+      navigation.navigate("index");
     } else {
-      Alert.alert('Retention Playbook Initialized', message, [
-        { text: 'OK', onPress: () => navigation.navigate('index') },
+      Alert.alert("Retention Playbook Initialized", message, [
+        { text: "OK", onPress: () => navigation.navigate("index") },
       ]);
     }
   };
 
   const getRiskColor = (risk) => {
-    if (risk >= 75) return theme.background === '#000000' ? '#FF6B6B' : '#DC2626';
-    if (risk >= 40) return theme.background === '#000000' ? '#FCD34D' : '#D97706';
-    return theme.background === '#000000' ? '#4ADE80' : '#059669';
+    if (risk >= 75)
+      return theme.background === "#000000" ? "#FF6B6B" : "#DC2626";
+    if (risk >= 40)
+      return theme.background === "#000000" ? "#FCD34D" : "#D97706";
+    return theme.background === "#000000" ? "#4ADE80" : "#059669";
   };
 
   return (
@@ -82,29 +84,53 @@ export default function DigitalTwinScreen() {
           },
         ]}
       >
-        <Text style={[styles.headerLabel, { color: theme.textSecondary }]}>CUSTOMER PROFILE</Text>
-        <Text style={[styles.customerName, { color: theme.text }]}>{customer.name}</Text>
-        <Text style={[styles.customerPlan, { color: theme.textSecondary }]}>{customer.plan}</Text>
-        
+        <Text style={[styles.headerLabel, { color: theme.textSecondary }]}>
+          CUSTOMER PROFILE
+        </Text>
+        <Text style={[styles.customerName, { color: theme.text }]}>
+          {customer.name}
+        </Text>
+        <Text style={[styles.customerPlan, { color: theme.textSecondary }]}>
+          {customer.plan}
+        </Text>
+
         <View style={styles.headerMetrics}>
           <View>
-            <Text style={[styles.metricLabel, { color: theme.textSecondary }]}>Baseline Risk</Text>
-            <Text style={[styles.metricValue, { color: getRiskColor(customer.churnRisk) }]}>
+            <Text style={[styles.metricLabel, { color: theme.textSecondary }]}>
+              Baseline Risk
+            </Text>
+            <Text
+              style={[
+                styles.metricValue,
+                { color: getRiskColor(customer.churnRisk) },
+              ]}
+            >
               {customer.churnRisk}%
             </Text>
           </View>
           <View>
-            <Text style={[styles.metricLabel, { color: theme.textSecondary }]}>Account Health</Text>
+            <Text style={[styles.metricLabel, { color: theme.textSecondary }]}>
+              Account Health
+            </Text>
             <Text style={[styles.metricValue, { color: theme.text }]}>
-              {customer.sentiment}% {customer.sentiment < 40 ? '😞' : '😊'}
+              {customer.sentiment}% {customer.sentiment < 40 ? "😞" : "😊"}
             </Text>
           </View>
         </View>
 
-        <View style={[styles.divider, { backgroundColor: theme.backgroundSelected }]} />
-        
-        <Text style={[styles.recLabel, { color: theme.textSecondary }]}>Primary Churn Factor:</Text>
-        <Text style={[styles.recText, { color: theme.text }]}>{customer.reason}</Text>
+        <View
+          style={[
+            styles.divider,
+            { backgroundColor: theme.backgroundSelected },
+          ]}
+        />
+
+        <Text style={[styles.recLabel, { color: theme.textSecondary }]}>
+          Primary Churn Factor:
+        </Text>
+        <Text style={[styles.recText, { color: theme.text }]}>
+          {customer.reason}
+        </Text>
       </View>
 
       {/* Simulator Section */}
@@ -127,9 +153,21 @@ export default function DigitalTwinScreen() {
         {/* Risk Comparison Visualization */}
         <View style={styles.simulationVisualization}>
           <View style={styles.visCol}>
-            <Text style={[styles.visLabel, { color: theme.textSecondary }]}>BASELINE RISK</Text>
-            <View style={[styles.visCircle, { borderColor: getRiskColor(customer.churnRisk) }]}>
-              <Text style={[styles.visValue, { color: getRiskColor(customer.churnRisk) }]}>
+            <Text style={[styles.visLabel, { color: theme.textSecondary }]}>
+              BASELINE RISK
+            </Text>
+            <View
+              style={[
+                styles.visCircle,
+                { borderColor: getRiskColor(customer.churnRisk) },
+              ]}
+            >
+              <Text
+                style={[
+                  styles.visValue,
+                  { color: getRiskColor(customer.churnRisk) },
+                ]}
+              >
                 {customer.churnRisk}%
               </Text>
             </View>
@@ -140,9 +178,24 @@ export default function DigitalTwinScreen() {
           </View>
 
           <View style={styles.visCol}>
-            <Text style={[styles.visLabel, { color: theme.textSecondary }]}>SIMULATED RISK</Text>
-            <View style={[styles.visCircle, { borderColor: getRiskColor(simulatedRisk), backgroundColor: getRiskColor(simulatedRisk) + '10' }]}>
-              <Text style={[styles.visValue, { color: getRiskColor(simulatedRisk) }]}>
+            <Text style={[styles.visLabel, { color: theme.textSecondary }]}>
+              SIMULATED RISK
+            </Text>
+            <View
+              style={[
+                styles.visCircle,
+                {
+                  borderColor: getRiskColor(simulatedRisk),
+                  backgroundColor: getRiskColor(simulatedRisk) + "10",
+                },
+              ]}
+            >
+              <Text
+                style={[
+                  styles.visValue,
+                  { color: getRiskColor(simulatedRisk) },
+                ]}
+              >
                 {simulatedRisk}%
               </Text>
             </View>
@@ -151,26 +204,42 @@ export default function DigitalTwinScreen() {
 
         {/* Play selectors */}
         <View style={styles.playsSection}>
-          <Text style={[styles.playHeader, { color: theme.text }]}>Select Retention Plays:</Text>
+          <Text style={[styles.playHeader, { color: theme.text }]}>
+            Select Retention Plays:
+          </Text>
 
           {/* Play 1: Discount */}
           <Pressable
             style={({ pressed }) => [
               styles.checkboxRow,
               {
-                backgroundColor: applyDiscount ? theme.backgroundSelected : 'transparent',
+                backgroundColor: applyDiscount
+                  ? theme.backgroundSelected
+                  : "transparent",
                 borderColor: theme.backgroundSelected,
                 opacity: pressed ? 0.7 : 1,
               },
             ]}
             onPress={() => setApplyDiscount(!applyDiscount)}
           >
-            <View style={[styles.checkbox, { borderColor: theme.text, backgroundColor: applyDiscount ? theme.text : 'transparent' }]}>
+            <View
+              style={[
+                styles.checkbox,
+                {
+                  borderColor: theme.text,
+                  backgroundColor: applyDiscount ? theme.text : "transparent",
+                },
+              ]}
+            >
               {applyDiscount && <Text style={styles.checkboxCheck}>✓</Text>}
             </View>
             <View style={styles.checkboxLabelContainer}>
-              <Text style={[styles.playTitle, { color: theme.text }]}>Apply 15% Subscription Discount</Text>
-              <Text style={[styles.playEffect, { color: '#059669' }]}>Reduces risk by 35% (Forecast: High Likelihood)</Text>
+              <Text style={[styles.playTitle, { color: theme.text }]}>
+                Apply 15% Subscription Discount
+              </Text>
+              <Text style={[styles.playEffect, { color: "#059669" }]}>
+                Reduces risk by 35% (Forecast: High Likelihood)
+              </Text>
             </View>
           </Pressable>
 
@@ -179,19 +248,33 @@ export default function DigitalTwinScreen() {
             style={({ pressed }) => [
               styles.checkboxRow,
               {
-                backgroundColor: applyOnboarding ? theme.backgroundSelected : 'transparent',
+                backgroundColor: applyOnboarding
+                  ? theme.backgroundSelected
+                  : "transparent",
                 borderColor: theme.backgroundSelected,
                 opacity: pressed ? 0.7 : 1,
               },
             ]}
             onPress={() => setApplyOnboarding(!applyOnboarding)}
           >
-            <View style={[styles.checkbox, { borderColor: theme.text, backgroundColor: applyOnboarding ? theme.text : 'transparent' }]}>
+            <View
+              style={[
+                styles.checkbox,
+                {
+                  borderColor: theme.text,
+                  backgroundColor: applyOnboarding ? theme.text : "transparent",
+                },
+              ]}
+            >
               {applyOnboarding && <Text style={styles.checkboxCheck}>✓</Text>}
             </View>
             <View style={styles.checkboxLabelContainer}>
-              <Text style={[styles.playTitle, { color: theme.text }]}>Schedule Success Coach Sync</Text>
-              <Text style={[styles.playEffect, { color: '#059669' }]}>Reduces risk by 25% (Improves Sentiment)</Text>
+              <Text style={[styles.playTitle, { color: theme.text }]}>
+                Schedule Success Coach Sync
+              </Text>
+              <Text style={[styles.playEffect, { color: "#059669" }]}>
+                Reduces risk by 25% (Improves Sentiment)
+              </Text>
             </View>
           </Pressable>
 
@@ -200,19 +283,35 @@ export default function DigitalTwinScreen() {
             style={({ pressed }) => [
               styles.checkboxRow,
               {
-                backgroundColor: applyFeatureBeta ? theme.backgroundSelected : 'transparent',
+                backgroundColor: applyFeatureBeta
+                  ? theme.backgroundSelected
+                  : "transparent",
                 borderColor: theme.backgroundSelected,
                 opacity: pressed ? 0.7 : 1,
               },
             ]}
             onPress={() => setApplyFeatureBeta(!applyFeatureBeta)}
           >
-            <View style={[styles.checkbox, { borderColor: theme.text, backgroundColor: applyFeatureBeta ? theme.text : 'transparent' }]}>
+            <View
+              style={[
+                styles.checkbox,
+                {
+                  borderColor: theme.text,
+                  backgroundColor: applyFeatureBeta
+                    ? theme.text
+                    : "transparent",
+                },
+              ]}
+            >
               {applyFeatureBeta && <Text style={styles.checkboxCheck}>✓</Text>}
             </View>
             <View style={styles.checkboxLabelContainer}>
-              <Text style={[styles.playTitle, { color: theme.text }]}>Grant Priority DB Beta Access</Text>
-              <Text style={[styles.playEffect, { color: '#059669' }]}>Reduces risk by 20% (Resolves Technical Factor)</Text>
+              <Text style={[styles.playTitle, { color: theme.text }]}>
+                Grant Priority DB Beta Access
+              </Text>
+              <Text style={[styles.playEffect, { color: "#059669" }]}>
+                Reduces risk by 20% (Resolves Technical Factor)
+              </Text>
             </View>
           </Pressable>
         </View>
@@ -228,12 +327,16 @@ export default function DigitalTwinScreen() {
           ]}
           onPress={handleTriggerPlay}
         >
-          <Text style={styles.triggerButtonText}>Trigger Playbook Simulation</Text>
+          <Text style={styles.triggerButtonText}>
+            Trigger Playbook Simulation
+          </Text>
         </Pressable>
       </View>
 
       {/* Recent Interactions History */}
-      <Text style={[styles.sectionTitle, { color: theme.text }]}>Recent Account History</Text>
+      <Text style={[styles.sectionTitle, { color: theme.text }]}>
+        Recent Account History
+      </Text>
       <View
         style={[
           styles.card,
@@ -252,10 +355,20 @@ export default function DigitalTwinScreen() {
             ]}
           >
             <View style={styles.interactionHeader}>
-              <Text style={[styles.interactionType, { color: theme.text }]}>{item.type}</Text>
-              <Text style={[styles.interactionDate, { color: theme.textSecondary }]}>{item.date}</Text>
+              <Text style={[styles.interactionType, { color: theme.text }]}>
+                {item.type}
+              </Text>
+              <Text
+                style={[styles.interactionDate, { color: theme.textSecondary }]}
+              >
+                {item.date}
+              </Text>
             </View>
-            <Text style={[styles.interactionText, { color: theme.textSecondary }]}>{item.text}</Text>
+            <Text
+              style={[styles.interactionText, { color: theme.textSecondary }]}
+            >
+              {item.text}
+            </Text>
           </View>
         ))}
       </View>
@@ -279,13 +392,13 @@ const styles = StyleSheet.create({
   },
   headerLabel: {
     fontSize: 11,
-    fontWeight: '700',
+    fontWeight: "700",
     letterSpacing: 0.5,
     marginBottom: 4,
   },
   customerName: {
     fontSize: 24,
-    fontWeight: '800',
+    fontWeight: "800",
     letterSpacing: -0.5,
   },
   customerPlan: {
@@ -293,7 +406,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   headerMetrics: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginTop: Spacing.three,
     gap: Spacing.five,
   },
@@ -303,7 +416,7 @@ const styles = StyleSheet.create({
   },
   metricValue: {
     fontSize: 20,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   divider: {
     height: 1,
@@ -311,7 +424,7 @@ const styles = StyleSheet.create({
   },
   recLabel: {
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: 4,
   },
   recText: {
@@ -320,7 +433,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: "700",
     marginTop: Spacing.two,
   },
   sectionSubtitle: {
@@ -334,17 +447,17 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.four,
   },
   simulationVisualization: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
     paddingVertical: Spacing.two,
   },
   visCol: {
-    alignItems: 'center',
+    alignItems: "center",
   },
   visLabel: {
     fontSize: 11,
-    fontWeight: '700',
+    fontWeight: "700",
     marginBottom: Spacing.two,
   },
   visCircle: {
@@ -352,28 +465,28 @@ const styles = StyleSheet.create({
     height: 90,
     borderRadius: 45,
     borderWidth: 3,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   visValue: {
     fontSize: 24,
-    fontWeight: '800',
+    fontWeight: "800",
   },
   visArrow: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   playsSection: {
     marginTop: Spacing.three,
   },
   playHeader: {
     fontSize: 14,
-    fontWeight: '700',
+    fontWeight: "700",
     marginBottom: Spacing.two,
   },
   checkboxRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     padding: Spacing.two,
     borderRadius: 10,
     borderWidth: 1,
@@ -384,51 +497,51 @@ const styles = StyleSheet.create({
     height: 20,
     borderRadius: 4,
     borderWidth: 1.5,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginRight: Spacing.two,
   },
   checkboxCheck: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     fontSize: 12,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   checkboxLabelContainer: {
     flex: 1,
   },
   playTitle: {
     fontSize: 13,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   playEffect: {
     fontSize: 11,
     marginTop: 2,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   triggerButton: {
     marginTop: Spacing.three,
     borderRadius: 12,
     paddingVertical: 14,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   triggerButtonText: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     fontSize: 15,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   interactionItem: {
     paddingVertical: Spacing.two,
     borderBottomWidth: 1,
   },
   interactionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 4,
   },
   interactionType: {
     fontSize: 14,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   interactionDate: {
     fontSize: 12,
