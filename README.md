@@ -4,6 +4,164 @@ The Sentient Retention Engine (SRE) is a next-generation customer retention plat
 
 ---
 
+## Architecture
+
+### System Overview
+
+```mermaid
+graph TB
+    subgraph Client["📱 Client Layer"]
+        WEB["🌐 Web Browser"]
+        IOS["🍎 iOS / Expo Go"]
+        AND["🤖 Android / Expo Go"]
+    end
+
+    subgraph App["⚛️ React Native App (Expo SDK 54)"]
+        ROUTER["Expo Router\n(File-Based Navigation)"]
+
+        subgraph Screens["Screen Modules"]
+            DASH["📊 Dashboard\nKPIs · Charts · Alerts"]
+            CUST["👥 Customer List\nRisk Profiles · Search"]
+            TWIN["🧠 Digital Twin\nSimulator · Playbooks"]
+            AGENT["🤖 Agent Control Room\nLogs · Trust Config"]
+            APPROVE["🛡️ Governance Approvals\nReview · Sign-Off"]
+        end
+
+        subgraph State["State Management"]
+            CTX["SREContext\n(React Context)"]
+            ENGINE["⚡ Real-Time Engine\n(5s tick interval)"]
+        end
+
+        subgraph Data["Data Layer"]
+            MOCK["mockData.js\n(Seed Data)"]
+            RT["realtimeEngine.js\n(Live Mutations)"]
+        end
+
+        subgraph UI["Shared Components"]
+            KPI["KPICard"]
+            CC["CustomerCard"]
+            THEME["Theme System\n(Light/Dark HSL)"]
+        end
+    end
+
+    WEB & IOS & AND --> ROUTER
+    ROUTER --> DASH & CUST & TWIN & AGENT & APPROVE
+    DASH & CUST & TWIN & AGENT & APPROVE --> CTX
+    CTX --> ENGINE
+    ENGINE --> RT
+    RT --> MOCK
+    DASH & CUST --> KPI & CC
+    KPI & CC --> THEME
+
+    style ENGINE fill:#059669,stroke:#10B981,color:#fff
+    style CTX fill:#2563EB,stroke:#3B82F6,color:#fff
+    style ROUTER fill:#7C3AED,stroke:#8B5CF6,color:#fff
+```
+
+### Real-Time Data Flow
+
+```mermaid
+sequenceDiagram
+    participant Engine as ⚡ RealtimeEngine
+    participant Context as 🔄 SREContext
+    participant Dashboard as 📊 Dashboard
+    participant Agents as 🤖 Agent Screen
+    participant Customers as 👥 Customer List
+    participant Twin as 🧠 Digital Twin
+    participant Approvals as 🛡️ Approvals
+
+    Note over Engine: Tick every 5 seconds
+
+    loop Every 5s
+        Engine->>Engine: evolveKPIs()
+        Engine->>Engine: evolveCustomers()
+        Engine->>Engine: evolveAgents()
+        Engine->>Engine: evolveChartData()
+        Engine->>Engine: maybeAddInteraction()
+        Engine->>Context: setState(newSnapshot)
+        Context-->>Dashboard: kpis, chartData, approvals
+        Context-->>Agents: agents, toggleStatus()
+        Context-->>Customers: customers (live risk scores)
+        Context-->>Twin: customer (live baseline)
+        Context-->>Approvals: approvals, handleAction()
+    end
+
+    Note over Dashboard,Approvals: All screens re-render with fresh data
+
+    Agents->>Context: toggleAgentStatus(id)
+    Context->>Engine: Update agent state
+    Engine-->>Dashboard: KPI "Active Agents" synced
+
+    Approvals->>Context: handleApprovalAction(id, approve)
+    Context->>Engine: Update approval state
+    Engine-->>Dashboard: KPI "Pending Approvals" synced
+```
+
+### Screen Navigation Map
+
+```mermaid
+graph LR
+    subgraph TabBar["Bottom Tab Navigation"]
+        HOME["🏠 Home"]
+        EXPLORE["🔍 Explore"]
+    end
+
+    subgraph HomeStack["Home Stack (index/)"]
+        DASH["📊 Dashboard"]
+        CUST["👥 Customers"]
+        TWIN["🧠 Digital Twin"]
+        AGENTS["🤖 Agents"]
+        APPROVALS["🛡️ Approvals"]
+    end
+
+    HOME --> DASH
+    DASH -->|"View Customers"| CUST
+    DASH -->|"View Agents"| AGENTS
+    DASH -->|"View All Approvals"| APPROVALS
+    CUST -->|"Simulate Twin"| TWIN
+    CUST -->|"View Details"| TWIN
+    TWIN -->|"Trigger Playbook"| DASH
+
+    style DASH fill:#7C3AED,stroke:#8B5CF6,color:#fff
+    style TWIN fill:#059669,stroke:#10B981,color:#fff
+```
+
+### AI Agent Decision Flow
+
+```mermaid
+flowchart TD
+    START(["⏱️ Engine Tick"]) --> CHECK{Agent Active?}
+    CHECK -->|Yes| EVAL["Evaluate Customer Pool"]
+    CHECK -->|No| SKIP["Skip - Agent Paused"]
+
+    EVAL --> RISK["Score Churn Risk"]
+    RISK --> SIM["Run Retention Simulation"]
+    SIM --> PLAY["Generate Retention Play"]
+
+    PLAY --> TRUST{"Trust Level?"}
+    TRUST -->|High| AUTO["Auto-Execute Play"]
+    TRUST -->|Medium| QUEUE["Queue for Approval"]
+    TRUST -->|Low| ESCALATE["Escalate to Admin"]
+
+    AUTO --> LOG["📋 Append to Agent Logs"]
+    QUEUE --> APPROVE{"Admin Decision"}
+    ESCALATE --> APPROVE
+
+    APPROVE -->|Approved| EXEC["Execute Playbook"]
+    APPROVE -->|Rejected| CANCEL["Cancel Play"]
+    EXEC --> LOG
+    CANCEL --> LOG
+
+    LOG --> KPI["📊 Update KPIs"]
+
+    style START fill:#F59E0B,stroke:#D97706,color:#000
+    style AUTO fill:#059669,stroke:#10B981,color:#fff
+    style QUEUE fill:#2563EB,stroke:#3B82F6,color:#fff
+    style ESCALATE fill:#DC2626,stroke:#EF4444,color:#fff
+```
+
+---
+
 ## Key Features
 
 *   **System Health Dashboard**: Comprehensive operations room displaying average churn trends, financial KPIs (saved revenue, saved customers), active agent status, and real-time governance activity logs.
@@ -38,8 +196,8 @@ The Sentient Retention Engine (SRE) is a next-generation customer retention plat
 
 1.  **Clone the Repository**
     ```bash
-    git clone https://github.com/your-org/sre-react-app.git
-    cd sre-react-app/SentientRetentionApp
+    git clone https://github.com/raghuvanshi-sec/SRE-ReactApp.git
+    cd SRE-ReactApp/SentientRetentionApp
     ```
 
 2.  **Install Dependencies**
@@ -91,11 +249,15 @@ SentientRetentionApp/
 │   │   ├── KPICard.js          # Core statistics metric card
 │   │   └── themed-text.tsx     # Custom text styling supporting dark mode
 │   │
+│   ├── context/                # Global state management
+│   │   └── SREContext.js       # React Context providing real-time data
+│   │
 │   ├── constants/              # Application layout guidelines and constants
 │   │   └── theme.ts            # HSL color values and spacing variables
 │   │
-│   ├── data/                   # Data structures
-│   │   └── mockData.js         # Pre-configured customer files and logs
+│   ├── data/                   # Data structures & engines
+│   │   ├── mockData.js         # Seed data (customer profiles, agents, KPIs)
+│   │   └── realtimeEngine.js   # Real-time simulation engine (5s tick)
 │   │
 │   └── hooks/                  # Custom application hooks
 │       └── use-theme.ts        # Color scheme resolver and styling utilities
