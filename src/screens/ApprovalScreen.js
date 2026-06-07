@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -10,14 +10,13 @@ import {
 } from 'react-native';
 import { useTheme } from '../hooks/use-theme';
 import { Spacing } from '../constants/theme';
-import { mockApprovals } from '../data/mockData';
+import { useSRE } from '../context/SREContext';
 
 export default function ApprovalScreen() {
   const theme = useTheme();
-  const [approvals, setApprovals] = useState(mockApprovals);
+  const { approvals, handleApprovalAction, lastUpdated } = useSRE();
 
   const handleAction = (id, customerName, actionType) => {
-    // Action Type is either 'approve' or 'reject'
     const successMsg =
       actionType === 'approve'
         ? `Successfully APPROVED retention play for ${customerName}. Playbook triggered.`
@@ -32,12 +31,7 @@ export default function ApprovalScreen() {
       );
     }
 
-    // Update state to reflect decision (changing status or removing)
-    setApprovals(
-      approvals.map((app) =>
-        app.id === id ? { ...app, status: actionType === 'approve' ? 'approved' : 'rejected' } : app
-      )
-    );
+    handleApprovalAction(id, actionType);
   };
 
   const pendingApprovals = approvals.filter((a) => a.status === 'pending');
@@ -205,6 +199,12 @@ export default function ApprovalScreen() {
         <Text style={[styles.subtitle, { color: theme.textSecondary }]}>
           Review and sign-off on critical SRE agent proposals
         </Text>
+        <View style={styles.liveIndicatorRow}>
+          <View style={styles.liveDot} />
+          <Text style={[styles.liveText, { color: '#10B981' }]}>
+            LIVE — {lastUpdated.toLocaleTimeString()}
+          </Text>
+        </View>
       </View>
 
       {/* Pending Section */}
@@ -255,6 +255,23 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginTop: 4,
     fontWeight: '500',
+  },
+  liveIndicatorRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 8,
+    gap: 6,
+  },
+  liveDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#10B981',
+  },
+  liveText: {
+    fontSize: 11,
+    fontWeight: '700',
+    letterSpacing: 0.5,
   },
   sectionTitle: {
     fontSize: 15,

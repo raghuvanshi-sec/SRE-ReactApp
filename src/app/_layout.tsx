@@ -3,6 +3,7 @@ import { useColorScheme, LogBox, Platform } from 'react-native';
 
 import { AnimatedSplashOverlay } from '@/components/animated-icon';
 import AppTabs from '@/components/app-tabs';
+import { SREProvider } from '@/context/SREContext';
 
 // Ignore React 19 / react-native-web third-party event warnings and SVG negative value issues
 LogBox.ignoreLogs([
@@ -40,10 +41,12 @@ if (Platform.OS === 'web') {
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <AnimatedSplashOverlay />
-      <AppTabs />
-    </ThemeProvider>
+    <SREProvider>
+      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+        <AnimatedSplashOverlay />
+        <AppTabs />
+      </ThemeProvider>
+    </SREProvider>
   );
 }
 

@@ -13,12 +13,13 @@ import { LineChart } from 'react-native-chart-kit';
 import { useTheme } from '../hooks/use-theme';
 import { Spacing } from '../constants/theme';
 import KPICard from '../components/KPIcard';
-import { mockKPIs, mockApprovals } from '../data/mockData';
+import { useSRE } from '../context/SREContext';
 
 export default function DashboardScreen() {
   const theme = useTheme();
   const navigation = useNavigation();
   const screenWidth = Dimensions.get('window').width;
+  const { kpis, approvals, chartData, lastUpdated } = useSRE();
 
   // Chart styling options
   const chartConfig = {
@@ -38,15 +39,17 @@ export default function DashboardScreen() {
     decimalPlaces: 1,
   };
 
-  const chartData = {
+  const liveChartData = {
     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
     datasets: [
       {
-        data: [4.2, 3.8, 3.1, 2.9, 2.5, 2.4],
+        data: chartData,
         strokeWidth: 3,
       },
     ],
   };
+
+  const pendingApprovals = approvals.filter((a) => a.status === 'pending');
 
   return (
     <ScrollView
@@ -59,6 +62,12 @@ export default function DashboardScreen() {
         <Text style={[styles.subtitle, { color: theme.textSecondary }]}>
           AI-Powered Churn Prevention & Agent Governance
         </Text>
+        <View style={styles.liveIndicatorRow}>
+          <View style={styles.liveDot} />
+          <Text style={[styles.liveText, { color: '#10B981' }]}>
+            LIVE — Updated {lastUpdated.toLocaleTimeString()}
+          </Text>
+        </View>
       </View>
 
       {/* KPI Section */}
@@ -69,7 +78,7 @@ export default function DashboardScreen() {
         style={styles.kpiScroll}
         contentContainerStyle={styles.kpiContainer}
       >
-        {mockKPIs.map((kpi) => (
+        {kpis.map((kpi) => (
           <KPICard
             key={kpi.id}
             title={kpi.title}
@@ -98,7 +107,7 @@ export default function DashboardScreen() {
           </Text>
           <View style={styles.chartWrapper}>
             <LineChart
-              data={chartData}
+              data={liveChartData}
               width={Platform.OS === 'web' ? Math.max(10, Math.min(screenWidth - 64, 730)) : Math.max(10, screenWidth - 48)}
               height={220}
               chartConfig={chartConfig}
@@ -127,39 +136,45 @@ export default function DashboardScreen() {
             </Pressable>
           </View>
 
-          {mockApprovals.slice(0, 2).map((app) => (
-            <View
-              key={app.id}
-              style={[
-                styles.alertItem,
-                { borderBottomColor: theme.backgroundSelected },
-              ]}
-            >
-              <View style={styles.alertHeader}>
-                <Text style={[styles.alertCustomer, { color: theme.text }]}>
-                  {app.customerName}
-                </Text>
-                <Text
-                  style={[
-                    styles.alertPriority,
-                    {
-                      color:
-                        app.priority === 'Critical'
-                          ? '#EF4444'
-                          : app.priority === 'High'
-                          ? '#F59E0B'
-                          : '#3B82F6',
-                    },
-                  ]}
-                >
-                  {app.priority}
+          {pendingApprovals.length === 0 ? (
+            <Text style={[styles.emptyAlert, { color: theme.textSecondary }]}>
+              All clear — no pending approvals ✓
+            </Text>
+          ) : (
+            pendingApprovals.slice(0, 2).map((app) => (
+              <View
+                key={app.id}
+                style={[
+                  styles.alertItem,
+                  { borderBottomColor: theme.backgroundSelected },
+                ]}
+              >
+                <View style={styles.alertHeader}>
+                  <Text style={[styles.alertCustomer, { color: theme.text }]}>
+                    {app.customerName}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.alertPriority,
+                      {
+                        color:
+                          app.priority === 'Critical'
+                            ? '#EF4444'
+                            : app.priority === 'High'
+                            ? '#F59E0B'
+                            : '#3B82F6',
+                      },
+                    ]}
+                  >
+                    {app.priority}
+                  </Text>
+                </View>
+                <Text style={[styles.alertPlay, { color: theme.textSecondary }]} numberOfLines={1}>
+                  {app.proposedPlay}
                 </Text>
               </View>
-              <Text style={[styles.alertPlay, { color: theme.textSecondary }]} numberOfLines={1}>
-                {app.proposedPlay}
-              </Text>
-            </View>
-          ))}
+            ))
+          )}
         </View>
       </View>
 
@@ -246,6 +261,23 @@ const styles = StyleSheet.create({
     marginTop: 4,
     fontWeight: '500',
   },
+  liveIndicatorRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 8,
+    gap: 6,
+  },
+  liveDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#10B981',
+  },
+  liveText: {
+    fontSize: 11,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+  },
   sectionTitle: {
     fontSize: 16,
     fontWeight: '700',
@@ -318,6 +350,11 @@ const styles = StyleSheet.create({
   },
   alertPlay: {
     fontSize: 13,
+  },
+  emptyAlert: {
+    fontSize: 13,
+    textAlign: 'center',
+    paddingVertical: Spacing.three,
   },
   shortcutsGrid: {
     flexDirection: 'column',

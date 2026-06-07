@@ -11,13 +11,14 @@ import {
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import { useTheme } from '../hooks/use-theme';
 import { Spacing } from '../constants/theme';
-import { mockCustomers } from '../data/mockData';
+import { useSRE } from '../context/SREContext';
 
 export default function DigitalTwinScreen() {
   const theme = useTheme();
   const navigation = useNavigation();
   const { customerId = 'cust-1' } = useLocalSearchParams();
-  const customer = mockCustomers.find((c) => c.id === customerId) || mockCustomers[0];
+  const { customers } = useSRE();
+  const customer = customers.find((c) => c.id === customerId) || customers[0];
 
   // Simulator state
   const [applyDiscount, setApplyDiscount] = useState(false);

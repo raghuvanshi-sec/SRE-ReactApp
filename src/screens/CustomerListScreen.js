@@ -11,15 +11,16 @@ import { useNavigation } from 'expo-router';
 import { useTheme } from '../hooks/use-theme';
 import { Spacing } from '../constants/theme';
 import CustomerCard from '../components/CustomerCard';
-import { mockCustomers } from '../data/mockData';
+import { useSRE } from '../context/SREContext';
 
 export default function CustomerListScreen() {
   const theme = useTheme();
   const navigation = useNavigation();
+  const { customers } = useSRE();
   const [search, setSearch] = useState('');
   const [activeFilter, setActiveFilter] = useState('ALL'); // ALL, HIGH, MEDIUM, LOW
 
-  const filteredCustomers = mockCustomers.filter((cust) => {
+  const filteredCustomers = customers.filter((cust) => {
     // Search filter
     const matchesSearch =
       cust.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -58,6 +59,14 @@ export default function CustomerListScreen() {
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
+      {/* Live indicator */}
+      <View style={styles.liveBar}>
+        <View style={styles.liveDot} />
+        <Text style={[styles.liveText, { color: '#10B981' }]}>
+          LIVE — Risks updating in real time
+        </Text>
+      </View>
+
       {/* Search Bar */}
       <View style={styles.searchContainer}>
         <TextInput
@@ -138,6 +147,24 @@ export default function CustomerListScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  liveBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: Spacing.three,
+    paddingTop: Spacing.two,
+    gap: 6,
+  },
+  liveDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#10B981',
+  },
+  liveText: {
+    fontSize: 11,
+    fontWeight: '700',
+    letterSpacing: 0.5,
   },
   searchContainer: {
     padding: Spacing.three,

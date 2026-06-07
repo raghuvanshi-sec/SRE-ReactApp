@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -9,33 +9,12 @@ import {
 } from 'react-native';
 import { useTheme } from '../hooks/use-theme';
 import { Spacing } from '../constants/theme';
-import { mockAgents } from '../data/mockData';
+import { useSRE } from '../context/SREContext';
 
 export default function AgentScreen() {
   const theme = useTheme();
-  const [agents, setAgents] = useState(mockAgents);
-  const [selectedAgentId, setSelectedAgentId] = useState(agents[0]?.id || '');
-
-  const toggleAgentStatus = (id) => {
-    setAgents(
-      agents.map((agent) =>
-        agent.id === id
-          ? { ...agent, status: agent.status === 'active' ? 'paused' : 'active' }
-          : agent
-      )
-    );
-  };
-
-  const cycleTrustLevel = (id) => {
-    const trustCycle = { High: 'Medium', Medium: 'Low', Low: 'High' };
-    setAgents(
-      agents.map((agent) =>
-        agent.id === id
-          ? { ...agent, trustLevel: trustCycle[agent.trustLevel] || 'Medium' }
-          : agent
-      )
-    );
-  };
+  const { agents, toggleAgentStatus, cycleTrustLevel, lastUpdated } = useSRE();
+  const [selectedAgentId, setSelectedAgentId] = React.useState(agents[0]?.id || '');
 
   const selectedAgent = agents.find((a) => a.id === selectedAgentId);
 
@@ -48,6 +27,12 @@ export default function AgentScreen() {
           <Text style={[styles.subtitle, { color: theme.textSecondary }]}>
             Monitor and configure autonomous sentient retention behaviors
           </Text>
+          <View style={styles.liveIndicatorRow}>
+            <View style={styles.liveDot} />
+            <Text style={[styles.liveText, { color: '#10B981' }]}>
+              LIVE — {lastUpdated.toLocaleTimeString()}
+            </Text>
+          </View>
         </View>
 
         {/* Agent Grid */}
@@ -183,7 +168,7 @@ export default function AgentScreen() {
 
             <ScrollView style={styles.logStream} nestedScrollEnabled>
               {selectedAgent.systemLogs.map((log, idx) => (
-                <Text key={idx} style={[styles.logLine, { color: theme.text }]}>
+                <Text key={idx} style={[styles.logLine, { color: '#10B981' }]}>
                   {log}
                 </Text>
               ))}
@@ -216,6 +201,23 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginTop: 4,
     fontWeight: '500',
+  },
+  liveIndicatorRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 8,
+    gap: 6,
+  },
+  liveDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#10B981',
+  },
+  liveText: {
+    fontSize: 11,
+    fontWeight: '700',
+    letterSpacing: 0.5,
   },
   agentList: {
     gap: Spacing.three,
@@ -314,7 +316,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   logStream: {
-    maxHeight: 180,
+    maxHeight: 220,
     backgroundColor: '#0a0a0c',
     padding: Spacing.two,
     borderRadius: 8,
